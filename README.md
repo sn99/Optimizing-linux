@@ -67,11 +67,13 @@ Extract it, I am gonna assume a generic name from now on `linux-x.x.x`.
     ```shell
     sed -ri '/CONFIG_SYSTEM_TRUSTED_KEYS/s/=.+/=""/g' .config
     make -j N "KCFLAGS=-g -O3 -march=native -pipe"
-    make -j 16 "KCFLAGS=-g -O3 -march=native -pipe" modules
-    make -j 16 "KCFLAGS=-g -O3 -march=native -pipe" modules_install
-    make -j 16 "KCFLAGS=-g -O3 -march=native -pipe" install
+    make -j N "KCFLAGS=-g -O3 -march=native -pipe" modules
+    make -j N "KCFLAGS=-g -O3 -march=native -pipe" modules_install
+    make -j N "KCFLAGS=-g -O3 -march=native -pipe" install
     ```
    
+    Where `N` is the number of `cores` you have, alternatively use `$(getconf _NPROCESSORS_ONLN)`. 
+    
     If any of the step fails run `make clean` and start again.
 
 
