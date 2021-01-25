@@ -1,7 +1,5 @@
 # Optimizing Linux
 
----------------------------------------------------
-
 I am writing this guide as to save my progress and let others contribute to increase the performance even further, after all many are better than one.
 
 I am currently on fedora so some steps may vary from distro to distro.
@@ -23,7 +21,7 @@ I am currently on fedora so some steps may vary from distro to distro.
 
 ---------------------------------------------------
 
-### Compiling your own kernel
+## Compiling your own kernel
 
 I think by now everyone agrees that compiling your own kernel is one of the best options to get fastest possible speed.
 You might wanna google `How to make custom kernel in <distro>` to get the packages required to compile the kernel.
@@ -85,7 +83,7 @@ Extract it, I am gonna assume a generic name from now on `linux-x.x.x`.
    You can find yours `vmlinuz-x.x.x-x` in `/boot/`
 
 
-### Btrfs filesystem optimizations
+## Btrfs filesystem optimizations
 
 1. `sudo gedit /etc/fstab`, change it ot look something like this(this is on fedora, yours might vary):
     ```shell
@@ -102,7 +100,7 @@ Extract it, I am gonna assume a generic name from now on `linux-x.x.x`.
 3. `sudo systemctl enable fstrim.timer`
 
 
-### Changing boot parameters
+## Changing boot parameters
 
 **Important:** I usually like disabling `mitigations`, but them again I am on `AMD` based cpu and do not have `Meltdown` only `Spectre`, I do not run unknown script and even if I have to I use containers and use firefox with `noscript` and a few other security addons. Nonetheless if you understand the security concerns you can disable it and see a substantial boost in performance.
 
@@ -126,7 +124,7 @@ Extract it, I am gonna assume a generic name from now on `linux-x.x.x`.
 After rebooting you can run `cat /proc/cmdline` to see your boot options.
 
 
-### Improving boot time
+## Improving boot time
 
 Our last tweak kinda improved it but let's try something more.
 
@@ -151,7 +149,7 @@ Our last tweak kinda improved it but let's try something more.
     You might wanna google every service that you think about disabling and what it does, in my case it just updates dnf cache which I usually like to do manually.
 
 
-### Changing swappiness
+## Changing swappiness
 
 If you have 8GB or more ram you might benefit from it otherwise leave it as it is.
 
@@ -164,7 +162,7 @@ If you have 8GB or more ram you might benefit from it otherwise leave it as it i
 3. Enter `vm.swappiness=10` and reboot, now step 1 should print 10.
 
 
-### Changing `scaling_governor` to `performance`
+## Changing `scaling_governor` to `performance`
 
 1. Run `cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor` to see your current governor.
 
@@ -180,7 +178,7 @@ If you have 8GB or more ram you might benefit from it otherwise leave it as it i
     The default is `schedutil`, you can see others [here](https://www.kernel.org/doc/html/v4.14/admin-guide/pm/cpufreq.html).
    
 
-### Improving graphic card performance 
+## Improving graphic card performance 
 
 You can find overclocking tools specific to you GPU(s), but to make sure your graphics card isn’t being suppressed by the OS(especially AMD):
 
@@ -207,4 +205,12 @@ You can find overclocking tools specific to you GPU(s), but to make sure your gr
     ```
    
     You can change them back to auto if your system overheats.
+    
 
+---------------------------------------------------
+
+## License
+
+Licensed under
+
+ * MIT license ([LICENSE](LICENSE) or http://opensource.org/licenses/MIT)
