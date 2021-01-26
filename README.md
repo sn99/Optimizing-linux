@@ -224,7 +224,7 @@ If you have 8GB or more ram you might benefit from it otherwise leave it as it i
 ## Changing `scaling_governor` to `performance`
 
 
-Do not change it to `performance` on Ryzen based CPUs as it actually hurts their performance, using `ondemand` or `schedutil` is better(more leaning towards `schedutil` as soon as it gets [fixed](https://www.phoronix.com/scan.php?page=article&item=linux511-amd-patch&num=1)).
+Do not change it to `performance` on Ryzen based CPUs as it **_might_**(I seem to get better performance on AC, but then again `performance` does not seem to allow turbo boost in some cases) hurt their performance, using `ondemand` or `schedutil` is better(more leaning towards `schedutil` as soon as it gets [fixed](https://www.phoronix.com/scan.php?page=article&item=linux511-amd-patch&num=1)).
 
 
 1. Run `cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor` to see your current governor.
