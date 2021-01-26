@@ -1,20 +1,22 @@
 # Optimizing Linux
 
-I am writing this guide as to save my progress and let others contribute to increase the performance even further, after all many are better than one.
+I am writing this guide as to save my progress and let others contribute to increase the performance even further, after all many are better than one. You can use all of them or just a few of them.
 
 I am currently on fedora so some steps may vary from distro to distro.
 
 
-<details><summary>INDEX</summary>
+<details><summary>Index</summary>
 <p>
 
 - [Compiling your own kernel](#compiling-your-own-kernel)
+  - [Removing your own compiled kernel](#removing-your-own-compiled-kernel)
 - [Btrfs filesystem optimizations](#btrfs-filesystem-optimizations)
 - [Changing boot parameters](#changing-boot-parameters)
 - [Improving boot time](#improving-boot-time)
 - [Changing swappiness](#changing-swappiness)
 - [Changing scaling_governor to performance](#changing-scaling_governor-to-performance)
 - [Improving graphic card performance](#improving-graphic-card-performance)
+- [Some other tweaks](#some-other-tweaks)
 
 </p>
 </details>
@@ -84,6 +86,23 @@ Extract it, I am gonna assume a generic name from now on `linux-x.x.x`.
     ```
    You can find yours `vmlinuz-x.x.x-x` in `/boot/`
 
+Now restart and run `uname -r` to see your own kernel.
+
+### Removing your own compiled kernel
+
+Try to keep the last working kernel i.e. have a minimum of 2 kernels (the one you are using and the previous one).
+
+1. These entries need to be removed: 
+   ```shell
+   /boot/vmlinuz-x.x.x-x
+   /boot/initrd-x.x.x-x
+   /boot/System-map-x.x.x-x
+   /boot/config-x.x.x-x
+   /lib/modules/x.x.x-x/
+   /var/lib/initramfs/x.x.x-x/
+   ```
+
+2. `sudo grub2-mkconfig -o /boot/grub2/grub.cfg` or `sudo update-grub2`
 
 ## Btrfs filesystem optimizations
 
@@ -178,6 +197,9 @@ If you have 8GB or more ram you might benefit from it otherwise leave it as it i
     ```
    
     The default is `schedutil`, you can see others [here](https://www.kernel.org/doc/html/v4.14/admin-guide/pm/cpufreq.html).
+
+    
+Note: You can also change the default during compilation of the kernel.
    
 
 ## Improving graphic card performance 
@@ -206,8 +228,17 @@ You can find overclocking tools specific to you GPU(s), but to make sure your gr
     echo auto > /sys/class/drm/card1/device/power_dpm_force_performance_level
     ```
    
-    You can change them back to auto if your system overheats.
+    You can change them back to `auto` if your system overheats.
     
+
+## Some other tweaks
+
+- Disabling `Cool'n'Quiet` or `speedstep` or `PowerNow!` from bios (will cause heatup on laptops)
+
+- Using `X` instead of `Wayland` (may vary game to game)
+  
+- Using 'Opengl' backend in games instead of `Vulkun` (may vary game to game)
+
 
 ---------------------------------------------------
 
