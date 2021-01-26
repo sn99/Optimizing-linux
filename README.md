@@ -1,15 +1,17 @@
 # Optimizing Linux
 
-I am writing this guide as to save my progress and let others contribute to increase the performance even further, after all many are better than one. You can use all of them or just a few of them.
+I am writing this guide as to save my progress and let others contribute to increase the performance even further, after all many are better than one. You can use all of them or just a few of them. Read a topic full before starting.
 
 I am currently on fedora so some steps may vary from distro to distro.
 
+**NOTE: This guide is not for beginners who are new to linux** but a few of them can be used safely by them.
 
 <details><summary>Index</summary>
 <p>
 
 - [Compiling your own kernel](#compiling-your-own-kernel)
-  - [Removing your own compiled kernel](#removing-your-own-compiled-kernel)
+   - [Applying patches](#applying-patches)
+   - [Removing your own compiled kernel](#removing-your-own-compiled-kernel)
 - [Btrfs filesystem optimizations](#btrfs-filesystem-optimizations)
 - [Changing boot parameters](#changing-boot-parameters)
 - [Improving boot time](#improving-boot-time)
@@ -88,6 +90,41 @@ Extract it, I am gonna assume a generic name from now on `linux-x.x.x`.
 
 Now restart and run `uname -r` to see your own kernel.
 
+
+### Applying patches
+
+There are a number of patches that you can use to increase performance or to make life simpler.
+
+There are a lot of patches available and you will have to find those that suite you best. I will be using [graysky2](https://github.com/graysky2/kernel_gcc_patch) kernel patch here.
+Download the whole [repo](https://github.com/graysky2/kernel_gcc_patch) or just the file that you need. In my case I have gcc 10 and latest kernel so I will be using [this](https://github.com/graysky2/kernel_gcc_patch/blob/master/enable_additional_cpu_optimizations_for_gcc_v10.1%2B_kernel_v5.8%2B.patch).
+
+1. Copy the desired patch file into the root of the extracted linux dictionary, ame place as `.config`.
+
+
+2. `patch -p1 < enable_additional_cpu_optimizations_for_gcc_v10.1+_kernel_v5.8+.patch`
+
+   You should see an output like this:
+
+   ```shell
+   patching file arch/x86/Kconfig.cpu
+   patching file arch/x86/Makefile
+   patching file arch/x86/Makefile_32.cpu
+   patching file arch/x86/include/asm/vermagic.h
+   ```
+
+
+3. Now you can start from step 4 in the previous setup and will see:
+   ```markdown
+   -  Processor type and features
+       - Processor family
+           - [x] Native optimizations autodetected by GCC
+   ```
+   
+You should no longer need the `-march=native` from step 6 while building.
+
+
+There are other patches such as [scheduling related](https://cchalpha.blogspot.com/) that you can apply too. Again try finding your own patches that suits your system.
+
 ### Removing your own compiled kernel
 
 Try to keep the last working kernel i.e. have a minimum of 2 kernels (the one you are using and the previous one).
@@ -101,6 +138,7 @@ Try to keep the last working kernel i.e. have a minimum of 2 kernels (the one yo
    /lib/modules/x.x.x-x/
    /var/lib/initramfs/x.x.x-x/
    ```
+
 
 2. `sudo grub2-mkconfig -o /boot/grub2/grub.cfg` or `sudo update-grub2`
 
@@ -185,6 +223,10 @@ If you have 8GB or more ram you might benefit from it otherwise leave it as it i
 
 ## Changing `scaling_governor` to `performance`
 
+
+Do not change it to `performance` on Ryzen based CPUs as it actually hurts their performance, using `ondemand` or `schedutil` is better(more leaning towards `schedutil` as soon as it gets [fixed](https://www.phoronix.com/scan.php?page=article&item=linux511-amd-patch&num=1)).
+
+
 1. Run `cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor` to see your current governor.
 
 
@@ -233,12 +275,21 @@ You can find overclocking tools specific to you GPU(s), but to make sure your gr
 
 ## Some other tweaks
 
-- Disabling `Cool'n'Quiet` or `speedstep` or `PowerNow!` from bios (will cause heatup on laptops)
+- Disabling `Cool'n'Quiet` or `speedstep` or `PowerNow!` from bios (will cause heatup on laptops, only enable it during gaming)
+
+- Check other bios features too, they vary from system to system but should have a significant boost in performance
 
 - Using `X` instead of `Wayland` (may vary game to game)
   
-- Using 'Opengl' backend in games instead of `Vulkun` (may vary game to game)
+- Using `Opengl` backend in games instead of `Vulkun` (may vary game to game)
 
+
+
+---------------------------------------------------
+
+## Contributing
+
+Feel free to open an [issue](https://github.com/sn99/Optimizing-linux/issues/new) or [editing the README](https://github.com/sn99/Optimizing-linux/edit/master/README.md) yourself.
 
 ---------------------------------------------------
 
