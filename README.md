@@ -266,8 +266,8 @@ You can find overclocking tools specific to you GPU(s), but to make sure your gr
 
     ```shell
     sudo su
-    echo auto > /sys/class/drm/card0/device/power_dpm_force_performance_level
-    echo auto > /sys/class/drm/card1/device/power_dpm_force_performance_level
+    echo high > /sys/class/drm/card0/device/power_dpm_force_performance_level
+    echo high > /sys/class/drm/card1/device/power_dpm_force_performance_level
     ```
    
     You can change them back to `auto` if your system overheats.
