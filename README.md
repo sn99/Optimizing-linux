@@ -144,7 +144,7 @@ Try to keep the last working kernel i.e. have a minimum of 2 kernels (the one yo
 
 ## Btrfs filesystem optimizations
 
-1. `sudo gedit /etc/fstab`, change it ot look something like this(this is on fedora, yours might vary):
+1. `sudo gedit /etc/fstab`, change it to look something like this(this is on fedora, yours might vary):
     ```shell
     UUID=<do-not-change> /                       btrfs   subvol=root,x-systemd.device-timeout=0,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async 0 0
     UUID=<do-not-change> /boot                   ext4    defaults        1 2
@@ -161,7 +161,7 @@ Try to keep the last working kernel i.e. have a minimum of 2 kernels (the one yo
 
 ## Changing boot parameters
 
-**Important:** I usually like disabling `mitigations`, but them again I am on `AMD` based cpu and do not have `Meltdown` only `Spectre`, I do not run unknown script and even if I have to I use containers and use firefox with `noscript` and a few other security addons. Nonetheless if you understand the security concerns you can disable it and see a substantial boost in performance.
+**Important:** I usually like disabling `mitigations`, but then again I am on `AMD` based cpu and do not have `Meltdown` only `Spectre`, I do not run unknown script and even if I have to I use containers and use firefox with `noscript` and a few other security addons. Nonetheless if you understand the security concerns you can disable it and see a substantial boost in performance.
 
 1. `sudo gedit /etc/default/grub`
 
