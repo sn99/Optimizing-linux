@@ -42,7 +42,7 @@ Extract it, I am gonna assume a generic name from now on `linux-x.x.x`.
     ```shell
     '/boot/config-y.y.y-generic' -> '.config'
     ```
-    if it fails you can find config in `/proc/config.gz` or simple run `make oldconfig`(it usually starts a long process, try finding your config in your distro source code too). 
+    if it fails you can find config in `/proc/config.gz` or simple run `make listnewconfig` OR `make oldconfig`(it usually starts a long process, try finding your config in your distro source code too). 
 
 
 3. Edit `Makefile` and change `EXTRAVERSION` to add something. For example, "EXTRAVERSION = \<yourname>".
@@ -62,7 +62,7 @@ Extract it, I am gonna assume a generic name from now on `linux-x.x.x`.
 5. Now you might wanna run: 
     ```shell
     dmesg --level=err
-    dmesg --level=warr    
+    dmesg --level=warn   
     ```
    to see if you can enable some extra flags for extra features. For example `psmouse serio1: elantech: The touchpad can support a better bus than the too old PS/2 protocol. Make sure MOUSE_PS2_ELANTECH_SMBUS and MOUSE_ELAN_I2C_SMBUS are enabled to get a better touchpad experience.` can be solved by enabling both of them.
 
