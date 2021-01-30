@@ -48,7 +48,7 @@ Extract it, I am gonna assume a generic name from now on `linux-x.x.x`.
 3. Edit `Makefile` and change `EXTRAVERSION` to add something. For example, "EXTRAVERSION = \<yourname>".
 
 
-4. Now run `make xconfig`. Now a lot of optimizations are possible here and a lot of dead code and modules can be removed and enabled. Let's go the safe road for now.
+4. (You might wanna see next subtopic before doing this) Now run `make xconfig`. Now a lot of optimizations are possible here and a lot of dead code and modules can be removed and enabled. Let's go the safe road for now.
     - Now one of the best thing you can do is no longer build for a generic kernel. Select
         ```markdown
         -  Processor type and features
@@ -72,8 +72,8 @@ Extract it, I am gonna assume a generic name from now on `linux-x.x.x`.
     sed -ri '/CONFIG_SYSTEM_TRUSTED_KEYS/s/=.+/=""/g' .config
     make -j N "KCFLAGS=-g -O3 -march=native -pipe"
     make -j N "KCFLAGS=-g -O3 -march=native -pipe" modules
-    make -j N "KCFLAGS=-g -O3 -march=native -pipe" modules_install
-    make -j N "KCFLAGS=-g -O3 -march=native -pipe" install
+    sudo make -j N "KCFLAGS=-g -O3 -march=native -pipe" modules_install
+    sudo make -j N "KCFLAGS=-g -O3 -march=native -pipe" install
     ```
    
     Where `N` is the number of `cores` you have, alternatively use `$(getconf _NPROCESSORS_ONLN)`. 
@@ -274,6 +274,8 @@ You can find overclocking tools specific to you GPU(s), but to make sure your gr
     
 
 ## Some other tweaks
+
+- [ArchWiki/Improving performance](https://wiki.archlinux.org/index.php/Improving_performance)
 
 - Disabling `Cool'n'Quiet` or `speedstep` or `PowerNow!` from bios (will cause heatup on laptops, only enable it during gaming)
 
