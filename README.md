@@ -69,7 +69,7 @@ Extract it, I am gonna assume a generic name from now on `linux-x.x.x`.
 
 6. Finally compiling the kernel:
     ```shell
-    sed -ri '/CONFIG_SYSTEM_TRUSTED_KEYS/s/=.+/=""/g' .config
+    # sed -ri '/CONFIG_SYSTEM_TRUSTED_KEYS/s/=.+/=""/g' .config
     make -j N "KCFLAGS=-g -O3 -march=native -pipe"
     make -j N "KCFLAGS=-g -O3 -march=native -pipe" modules
     sudo make -j N "KCFLAGS=-g -O3 -march=native -pipe" modules_install
@@ -297,6 +297,7 @@ Feel free to open an [issue](https://github.com/sn99/Optimizing-linux/issues/new
 
 ## License
 
-Licensed under
+Licensed under either of these:
 
- * MIT license ([LICENSE](LICENSE) or http://opensource.org/licenses/MIT)
+* Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or https://www.apache.org/licenses/LICENSE-2.0)
+* MIT license ([LICENSE-MIT](LICENSE-MIT) or https://opensource.org/licenses/MIT)

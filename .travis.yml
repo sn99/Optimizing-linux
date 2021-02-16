@@ -1,0 +1,62 @@
+language: rust
+sudo: false
+
+INSTALL_NODE_VIA_NVM: &INSTALL_NODE_VIA_NVM
+                        |
+                        rustup target add wasm32-unknown-unknown
+                        curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
+                        source ~/.nvm/nvm.sh
+                        nvm install 10
+
+# Cache `cargo install`ed tools, but don't cache the project's `target`
+# directory (which ends up over-caching and filling all disk space!)
+cache:
+  directories:
+    - /home/travis/.cargo
+
+script:
+  - cargo build --verbose --all
+  - cargo test --verbose --all
+
+matrix:
+  allow_failures:
+    - name: Tests
+  include:
+    - name: Page
+      rust: stable
+      before_script:
+        - curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -f
+      install:
+        - *INSTALL_NODE_VIA_NVM
+      script:
+        - mkdir -p docs
+        - rm -rf ./docs/*
+        - wasm-pack build
+        - cd www && npm install
+        - npm run build
+        - mv ./dist/* ../docs
+      deploy:
+        provider: pages
+        skip-cleanup: true
+        github-token: $GITHUB_TOKEN
+        local-dir: docs
+        keep-history: false
+
+    - name: Tests
+      env: RUST_BACKTRACE=1
+      rust: stable
+      addons:
+        firefox: latest
+        chrome: stable
+      before_script:
+        - curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh -s -- -f
+      install:
+        - *INSTALL_NODE_VIA_NVM
+      script:
+        - cargo test --all
+        - cargo test --all --target wasm32-unknown-unknown
+
+
+notifications:
+  email:
+    on_success: never
