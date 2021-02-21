@@ -137,8 +137,9 @@ Try to keep the last working kernel i.e. have a minimum of 2 kernels (the one yo
    /boot/config-x.x.x-x
    /lib/modules/x.x.x-x/
    /var/lib/initramfs/x.x.x-x/
+   /boot/loader/entries/*x.x.x-x
    ```
-
+   
 
 2. `sudo grub2-mkconfig -o /boot/grub2/grub.cfg` or `sudo update-grub2`
 
