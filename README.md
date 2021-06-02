@@ -108,7 +108,7 @@ latest kernel so I will be
 using [this](https://github.com/graysky2/kernel_gcc_patch/blob/master/enable_additional_cpu_optimizations_for_gcc_v10.1%2B_kernel_v5.8%2B.patch)
 .
 
-1. Copy the desired patch file into the root of the extracted linux dictionary, ame place as `.config`.
+1. Copy the desired patch file into the root of the extracted linux dictionary; same place as `.config`.
 
 
 2. `patch -p1 < enable_additional_cpu_optimizations_for_gcc_v10.1+_kernel_v5.8+.patch`
