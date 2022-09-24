@@ -136,7 +136,8 @@ finding your own patches that suits your system.
 ### Removing your own compiled kernel
 
 Try to keep the last working kernel i.e. have a minimum of 2 kernels (the one you are using and the previous one).
-NOTE: Removing the currently running kernel (which can be determined by `uname -r`) will render your system non-bootable.
+NOTE: Removing the currently running kernel (which can be determined by `uname -r`) will render your system
+non-bootable.
 
 1. These entries need to be removed:
    ```shell
