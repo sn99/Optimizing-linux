@@ -7,8 +7,7 @@ I am currently on fedora so some steps may vary from distro to distro.
 
 **NOTE: This guide is not for beginners who are new to linux** but a few of them can be used safely by them.
 
-<details><summary>Index</summary>
-<p>
+## Index
 
 - [Compiling your own kernel](#compiling-your-own-kernel)
     - [Applying patches](#applying-patches)
@@ -20,9 +19,6 @@ I am currently on fedora so some steps may vary from distro to distro.
 - [Changing scaling_governor to performance](#changing-scaling_governor-to-performance)
 - [Improving graphic card performance](#improving-graphic-card-performance)
 - [Some other tweaks](#some-other-tweaks)
-
-</p>
-</details>
 
 ---------------------------------------------------
 
