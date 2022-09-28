@@ -1,15 +1,16 @@
 # Optimizing Linux
 
-I am writing this guide as to save my progress and let others contribute to increase the performance even further, after
-all many are better than one. You can use all of them or just a few of them. Read a topic full before starting.
+I am writing this guide to save my progress and let others contribute to increasing linux performance even further;
+after
+all, many are better than one. You can use all of them or just a few of them. **Read a topic fully before starting**.
 
-I am currently on fedora so some steps may vary from distro to distro.
+I am currently on fedora, so some steps may vary from distro to distro.
 
-**NOTE: This guide is not for beginners who are new to linux** but a few of them can be used safely by them.
+**NOTE: This guide is not for beginners who are new to Linux** but a few of them can be used safely by them.
 
 ## Index
 
-- [Compiling your own kernel](#compiling-your-own-kernel)
+- [Compiling your kernel](#compiling-your-kernel)
     - [Applying patches](#applying-patches)
     - [Removing your own compiled kernel](#removing-your-own-compiled-kernel)
 - [Btrfs filesystem optimizations](#btrfs-filesystem-optimizations)
@@ -22,55 +23,56 @@ I am currently on fedora so some steps may vary from distro to distro.
 
 ---------------------------------------------------
 
-## Compiling your own kernel
+## Compiling your kernel
 
-I think by now everyone agrees that compiling your own kernel is one of the best options to get fastest possible speed.
-You might wanna google `How to make custom kernel in <distro>` to get the packages required to compile the kernel.
+By now, everyone agrees that compiling your kernel is one of the best options to get the fastest possible speed.
+You might want to google `How to make custom kernel in <distro>` to get the packages required to compile the kernel.
 
-1. Download the [latest kernel](https://www.kernel.org/) or whatever you might like. Extract it, I am gonna assume a
+1. Download the [latest kernel](https://www.kernel.org/) or whatever you like. Extract it; I am going to assume a
    generic name from now on `linux-x.x.x`.
 
 
-2. The next step is finding the `config` file. Most of the time you can just run:
+2. The next step is finding the `config` file. Most of the time, you can just run:
     ```shell
     cp -v /boot/config-$(uname -r) .config
     ```
-   from inside `linux-x.x.x` which should give an output like:
+   From inside `linux-x.x.x`, which should give an output like:
     ```shell
     '/boot/config-y.y.y-generic' -> '.config'
     ```
-   if it fails you can find config in `/proc/config.gz` or simple run `make listnewconfig` OR `make oldconfig`(it
-   usually starts a long process, try finding your config in your distro source code too).
+   if it fails, you can find config in `/proc/config.gz` or simple run `make listnewconfig` OR `make oldconfig`(it
+   usually starts a long process; try finding your config in your distro source code too).
 
 
 3. Edit `Makefile` and change `EXTRAVERSION` to add something. For example, "EXTRAVERSION = \<yourname>".
 
 
-4. (You might wanna see next subtopic before doing this) Now run `make xconfig`. Now a lot of optimizations are possible
-   here and a lot of dead code and modules can be removed and enabled. Let's go the safe road for now.
-    - Now one of the best thing you can do is no longer build for a generic kernel. Select
+4. (You might wanna see the next subtopic before doing this) Now run `make xconfig`. Now a lot of optimizations are
+   possible
+   Here, many dead codes and modules can be removed and enabled. Let's go the safe road for now.
+    - Now, one of the best things you can do is no longer build for a generic kernel. Select
         ```markdown
         -  Processor type and features
             - Processor family
                 - [x] Core2/newer Xeon
         ```
       It should have been `Generic-x86-64` by default.
-    - There are a lot of other stuff you can do too but then you will have to yourself read them and see which suits
-      best. A simple way might be to just copy [clear linux config](https://github.com/clearlinux-pkgs/linux) but it
-      might disable certain features(see next [Applying patches](#applying-patches)).
+    - There is a lot of other stuff you can do too, but you will have to read them and see which suits
+      you best. A simple way might be to just copy [clear linux config](https://github.com/clearlinux-pkgs/linux), but
+      it might disable certain features(see next [Applying patches](#applying-patches)).
 
 
-5. Now you might wanna run:
+5. Now, you might want to run:
     ```shell
     dmesg --level=err
     dmesg --level=warn   
     ```
-   to see if you can enable some extra flags for extra features. For
-   example `psmouse serio1: elantech: The touchpad can support a better bus than the too old PS/2 protocol. Make sure MOUSE_PS2_ELANTECH_SMBUS and MOUSE_ELAN_I2C_SMBUS are enabled to get a better touchpad experience.`
+   To see if you can enable some extra flags for extra features. For
+   example, `psmouse serio1: elantech: The touchpad can support a better bus than the old PS/2 protocol. Make sure MOUSE_PS2_ELANTECH_SMBUS and MOUSE_ELAN_I2C_SMBUS are enabled to get a better touchpad experience.`
    can be solved by enabling both of them.
 
 
-6. Finally compiling the kernel:
+6. Finally, compiling the kernel:
     ```shell
     # sed -ri '/CONFIG_SYSTEM_TRUSTED_KEYS/s/=.+/=""/g' .config
     make -j N CFLAGS='-march=native -O3 -flto -pipe' CXXFLAGS='-march=native -O3 -flto -pipe'
@@ -81,7 +83,7 @@ You might wanna google `How to make custom kernel in <distro>` to get the packag
 
    Where `N` is the number of `cores` you have, alternatively use `$(getconf _NPROCESSORS_ONLN)`.
 
-   If any of the step fails run `make clean` and start again.
+   If any steps fail, run `make clean` and start again.
 
 
 7. Making it default in grub(I am using grub2, your process might vary):
@@ -91,16 +93,16 @@ You might wanna google `How to make custom kernel in <distro>` to get the packag
     ```
    You can find yours `vmlinuz-x.x.x-x` in `/boot/`
 
-Now restart and run `uname -r` to see your own kernel.
+Now restart and run `uname -r` to see your kernel.
 
 ### Applying patches
 
-There are a number of patches that you can use to increase performance or to make life simpler.
+There are several patches that you can use to increase performance or to make life simpler.
 
-There are a lot of patches available and you will have to find those that suite you best. I will be
+There are a lot of patches available, and you will have to find those that suit you best. I will be
 using [graysky2](https://github.com/graysky2/kernel_gcc_patch) kernel patch here. Download the
-whole [repo](https://github.com/graysky2/kernel_gcc_patch) or just the file that you need. In my case I have gcc 10 and
-latest kernel so I will be
+whole [repo](https://github.com/graysky2/kernel_gcc_patch) or just the file you need. In my case, I have GCC 10 and
+the latest kernel, so I will be
 using [this](https://github.com/graysky2/kernel_gcc_patch/blob/master/enable_additional_cpu_optimizations_for_gcc_v10.1%2B_kernel_v5.8%2B.patch)
 .
 
@@ -119,20 +121,20 @@ using [this](https://github.com/graysky2/kernel_gcc_patch/blob/master/enable_add
    ```
 
 
-3. Now you can start from step 4 in the previous setup and will see:
+3. Now, you can start from step 4 in the previous setup and will see:
    ```markdown
    -  Processor type and features
        - Processor family
            - [x] Native optimizations autodetected by GCC
    ```
 
-There are other patches such as [scheduling related](https://cchalpha.blogspot.com/) that you can apply too. Again try
-finding your own patches that suits your system.
+There are other patches such as [scheduling related](https://cchalpha.blogspot.com/) that you can apply to. Again try
+finding your patches that suits your system.
 
 ### Removing your own compiled kernel
 
-Try to keep the last working kernel i.e. have a minimum of 2 kernels (the one you are using and the previous one).
-NOTE: Removing the currently running kernel (which can be determined by `uname -r`) will render your system
+Try to keep the last working kernel, i.e., have a minimum of 2 kernels (the one you are using and the previous one).
+**NOTE:** Removing the currently running kernel (determined by `uname -r`) will render your system
 non-bootable.
 
 1. These entries need to be removed:
@@ -167,9 +169,12 @@ non-bootable.
 
 ## Changing boot parameters
 
-**Important:** I usually like disabling `mitigations`, but then again I am on `AMD` based cpu and do not have `Meltdown`
-only `Spectre`, I do not run unknown script and even if I have to I use containers and use firefox with `noscript` and a
-few other security addons. Nonetheless if you understand the security concerns you can disable it and see a substantial
+**Important:** I usually like disabling `mitigations`, but then again, I am on `AMD` based CPU and do not
+have `Meltdown`
+only `Spectre`, I do not run an unknown script, and even if I have to, I use containers and firefox with `noscript` and
+a
+few other security add-ons. Nonetheless, if you understand the security concerns, you can disable it and see a
+substantial
 boost in performance.
 
 1. `sudo gedit /etc/default/grub`
@@ -180,7 +185,7 @@ boost in performance.
     GRUB_CMDLINE_LINUX="... rhgb quiet mitigations=off nowatchdog processor.ignore_ppc=1"
     ```
 
-3. Also edit `GRUB_TIMEOUT=5` to `GRUB_TIMEOUT=1`
+3. Also, edit `GRUB_TIMEOUT=5` to `GRUB_TIMEOUT=1.`
 
 
 4. `sudo grub2-mkconfig -o /etc/grub2-efi.cfg`
@@ -189,13 +194,13 @@ boost in performance.
 
    `sudo grub2-mkconfig -o /etc/grub2.cfg`
 
-After rebooting you can run `cat /proc/cmdline` to see your boot options.
+After rebooting, you can run `cat /proc/cmdline` to see your boot options.
 
 ## Improving boot time
 
 Our last tweak kinda improved it but let's try something more.
 
-1. Remove startup applications, I use `gnome-tweaks` for a GUI like experience.
+1. Remove startup applications; I use `gnome-tweaks` for a GUI-like experience.
 
 
 2. Run the following to find what service is taking the longest:
@@ -206,7 +211,7 @@ Our last tweak kinda improved it but let's try something more.
    systemd-analyze critical-chain
    ```
 
-   This might vary from system to system and distro to distro, in my case(fedora) I disabled `dnf-makecache.service`
+   These might vary from system to system and distro to distro; in my case(fedora), I disabled `dnf-makecache.service.`
    which took around `32s`. To do so:
     ```shell
     systemctl disable dnf-makecache.service 
@@ -214,25 +219,25 @@ Our last tweak kinda improved it but let's try something more.
     gsettings set org.gnome.software download-updates false
     ```
 
-   You might wanna google every service that you think about disabling and what it does, in my case it just updates dnf
-   cache which I usually like to do manually.
+   You might wanna google every service that you think about disabling and what it does; in my case, it just updates dnf
+   cache, which I usually like to do manually.
 
 ## Changing swappiness
 
-If you have 8GB or more ram you might benefit from it otherwise leave it as it is.
+If you have 8GB or more ram, you might benefit from it; otherwise, leave it as it is.
 
-1. To see current swappiness enter `cat /proc/sys/vm/swappiness`, it should print `60`, we wanna make it 10.
+1. To see current swappiness, enter `cat /proc/sys/vm/swappiness`; it should print `60`; we wanna make it 10.
 
 
 2. `sudo gedit /etc/sysctl.conf`
 
 
-3. Enter `vm.swappiness=10` and reboot, now step 1 should print 10.
+3. Enter `vm.swappiness=10` and reboot; now step 1 should print 10.
 
 ## Changing `scaling_governor` to `performance`
 
 Do not change it to `performance` on Ryzen based CPUs as it **_might_**(I seem to get better performance on AC, but then
-again `performance` does not seem to allow turbo boost in some cases) hurt their performance, using `ondemand`
+again, `performance` does not seem to allow turbo boost in some cases) hurt their performance, using `ondemand`.
 or `schedutil` is better(more leaning towards `schedutil` as soon as it
 gets [fixed](https://www.phoronix.com/scan.php?page=article&item=linux511-amd-patch&num=1)).
 
@@ -241,22 +246,23 @@ gets [fixed](https://www.phoronix.com/scan.php?page=article&item=linux511-amd-pa
 
 2. `echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor`
 
-   This setting most likely will not persist during the next boot, I like to change it manually rather than making a
-   systemd service(I am an laptop and it gets hot). You might wanna google how to make it persistent for your distro if
+   This setting most likely will not persist during the next boot; I like to change it manually rather than making a
+   systemd service(I am a laptop, and it gets hot). You might want to google how to make it persistent for your distro
+   if
    you like OR:
     ```shell
     echo 'GOVERNOR="performance"' | sudo tee /etc/default/cpufrequtils
     sudo systemctl disable schedutil 
     ```
 
-   The default is `schedutil`, you can see
+   The default is `schedutil`; you can see
    others [here](https://www.kernel.org/doc/html/v4.14/admin-guide/pm/cpufreq.html).
 
-Note: You can also change the default during compilation of the kernel.
+**Note**: You can also change the default during the kernel compilation.
 
 ## Improving graphic card performance
 
-You can find overclocking tools specific to you GPU(s), but to make sure your graphics card isn’t being suppressed by
+You can find overclocking tools specific to your GPU(s), but to make sure your graphics card isn’t being suppressed by
 the OS(especially AMD):
 
 1. Checking whether it is `auto`:
@@ -287,10 +293,10 @@ the OS(especially AMD):
 
 - [ArchWiki/Improving performance](https://wiki.archlinux.org/index.php/Improving_performance)
 
-- Disabling `Cool'n'Quiet` or `speedstep` or `PowerNow!` from bios (will cause heatup on laptops, only enable it during
+- Disabling `Cool'n'Quiet` or `speedstep` or `PowerNow!` from bios (will cause heat up on laptops, only enable it during
   gaming)
 
-- Check other bios features too, they vary from system to system but should have a significant boost in performance
+- Check other bios features, too; they vary from system to system but should have a significant boost in performance
 
 - Using `X` instead of `Wayland` (may vary game to game)
 
