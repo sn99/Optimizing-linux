@@ -177,6 +177,10 @@ few other security add-ons. Nonetheless, if you understand the security concerns
 substantial
 boost in performance.
 
+1. `sudo grubby --args "mitigations=off nowatchdog processor.ignore_ppc=1 amdgpu.ppfeaturemask=0xffffffff ec_sys.write_support=1" --update-kernel=ALL`
+
+OR
+
 1. `sudo gedit /etc/default/grub`
 
 
