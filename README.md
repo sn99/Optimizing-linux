@@ -214,9 +214,10 @@ Our last tweak kinda improved it but let's try something more.
    These might vary from system to system and distro to distro; in my case(fedora), I disabled `dnf-makecache.service.`
    which took around `32s`. To do so:
     ```shell
-    systemctl disable dnf-makecache.service 
-    systemctl disable dnf-makecache.timer
-    gsettings set org.gnome.software download-updates false
+    sudo systemctl disable NetworkManager-wait-online.service
+    sudo systemctl disable dnf-makecache.service 
+    sudo systemctl disable dnf-makecache.timer
+    sudo gsettings set org.gnome.software download-updates false
     ```
 
    You might wanna google every service that you think about disabling and what it does; in my case, it just updates dnf
