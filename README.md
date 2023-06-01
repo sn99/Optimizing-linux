@@ -77,8 +77,8 @@ You might want to google `How to make custom kernel in <distro>` to get the pack
     # sed -ri '/CONFIG_SYSTEM_TRUSTED_KEYS/s/=.+/=""/g' .config
     make -j N CFLAGS='-march=native -O3 -flto -pipe' CXXFLAGS='-march=native -O3 -flto -pipe'
     make -j N CFLAGS='-march=native -O3 -flto -pipe' CXXFLAGS='-march=native -O3 -flto -pipe' modules
-    sudo make -j N CFLAGS='-march=native -O3 -flto -pipe' CXXFLAGS='-march=native -O3 -flto -pipe' modules_install
-    sudo make -j N CFLAGS='-march=native -O3 -flto -pipe' CXXFLAGS='-march=native -O3 -flto -pipe' install
+    sudo make modules_install
+    sudo make install
     ```
 
    Where `N` is the number of `cores` you have, alternatively use `$(getconf _NPROCESSORS_ONLN)`.
