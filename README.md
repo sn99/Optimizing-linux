@@ -4,7 +4,7 @@ I am writing this guide to save my progress and let others contribute to increas
 after
 all, many are better than one. You can use all of them or just a few of them. **Read a topic fully before starting**.
 
-I am currently on fedora, so some steps may vary from distro to distro.
+I am currently on [Nobara](https://nobaraproject.org/), so some steps may vary from distro to distro.
 
 **NOTE: This guide is not for beginners who are new to Linux** but a few of them can be used safely by them.
 
@@ -32,7 +32,7 @@ You might want to google `How to make custom kernel in <distro>` to get the pack
    generic name from now on `linux-x.x.x`.
 
 
-2. The next step is finding the `config` file. Most of the time, you can just run:
+2. The next step is finding the `config` file. Most of the time, you can run:
     ```shell
     cp -v /boot/config-$(uname -r) .config
     ```
@@ -47,19 +47,19 @@ You might want to google `How to make custom kernel in <distro>` to get the pack
 3. Edit `Makefile` and change `EXTRAVERSION` to add something. For example, "EXTRAVERSION = \<yourname>".
 
 
-4. (You might wanna see the next subtopic before doing this) Now run `make xconfig`. Now a lot of optimizations are
+4. (You might want to see the next subtopic before doing this) Now run `make xconfig`. Now a lot of optimizations are
    possible
    Here, many dead codes and modules can be removed and enabled. Let's go the safe road for now.
     - Now, one of the best things you can do is no longer build for a generic kernel. Select
         ```markdown
-        -  Processor type and features
+        - Processor type and features
             - Processor family
                 - [x] Core2/newer Xeon
         ```
       It should have been `Generic-x86-64` by default.
     - There is a lot of other stuff you can do too, but you will have to read them and see which suits
       you best. A simple way might be to just copy [clear linux config](https://github.com/clearlinux-pkgs/linux), but
-      it might disable certain features(see next [Applying patches](#applying-patches)).
+      it might disable certain features (see next [Applying patches](#applying-patches)).
 
 
 5. Now, you might want to run:
@@ -86,7 +86,7 @@ You might want to google `How to make custom kernel in <distro>` to get the pack
    If any steps fail, run `make clean` and start again.
 
 
-7. Making it default in grub(I am using grub2, your process might vary):
+7. Making it default in grub (I am using grub2, your process might vary):
     ```shell
     sudo grub2-mkconfig -o /boot/grub2/grub.cfg
     sudo grubby --set-default /boot/vmlinuz-x.x.x-x
@@ -128,12 +128,12 @@ using [this](https://github.com/graysky2/kernel_gcc_patch/blob/master/enable_add
            - [x] Native optimizations autodetected by GCC
    ```
 
-There are other patches such as [scheduling related](https://cchalpha.blogspot.com/) that you can apply to. Again try
+There are other patches such as [scheduling related](https://cchalpha.blogspot.com/) that you can apply to. Again, try
 finding your patches that suits your system.
 
 ### Removing your own compiled kernel
 
-Try to keep the last working kernel, i.e., have a minimum of 2 kernels (the one you are using and the previous one).
+Try to keep the last working kernel, i.e., have a minimum of two kernels (the one you are using and the previous one).
 **NOTE:** Removing the currently running kernel (determined by `uname -r`) will render your system
 non-bootable.
 
@@ -153,7 +153,7 @@ non-bootable.
 
 ## Btrfs filesystem optimizations
 
-1. `sudo gedit /etc/fstab`, change it to look something like this(this is on fedora, yours might vary):
+1. `sudo gedit /etc/fstab`, change it to look something like this (this is on fedora, yours might vary):
     ```shell
     UUID=<do-not-change> /                       btrfs   subvol=root,x-systemd.device-timeout=0,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async 0 0
     UUID=<do-not-change> /boot                   ext4    defaults        1 2
@@ -177,7 +177,7 @@ few other security add-ons. Nonetheless, if you understand the security concerns
 substantial
 boost in performance.
 
-1. `sudo grubby --args "mitigations=off nowatchdog processor.ignore_ppc=1 amdgpu.ppfeaturemask=0xffffffff ec_sys.write_support=1" --update-kernel=ALL`
+1. `sudo grubby --args "mitigations=off nowatchdog processor.ignore_ppc=1 amdgpu.ppfeaturemask=0xffffffff ec_sys.write_support=1 split_lock_detect=off" --update-kernel=ALL`
 
 OR
 
@@ -186,7 +186,7 @@ OR
 
 2. You will find a line `GRUB_CMDLINE_LINUX=" ... rhgb quiet` change it to (`...` signifies other parameters):
     ```shell
-    GRUB_CMDLINE_LINUX="... rhgb quiet mitigations=off nowatchdog processor.ignore_ppc=1"
+    GRUB_CMDLINE_LINUX="... rhgb quiet mitigations=off nowatchdog processor.ignore_ppc=1 split_lock_detect=off"
     ```
 
 3. Also, edit `GRUB_TIMEOUT=5` to `GRUB_TIMEOUT=1.`
@@ -202,7 +202,7 @@ After rebooting, you can run `cat /proc/cmdline` to see your boot options.
 
 ## Improving boot time
 
-Our last tweak kinda improved it but let's try something more.
+Our last tweak kinda improved it, but let's try something more.
 
 1. Remove startup applications; I use `gnome-tweaks` for a GUI-like experience.
 
@@ -224,14 +224,15 @@ Our last tweak kinda improved it but let's try something more.
     sudo gsettings set org.gnome.software download-updates false
     ```
 
-   You might wanna google every service that you think about disabling and what it does; in my case, it just updates dnf
+   You might want to google every service that you think about disabling and what it does; in my case, it just updates
+   dnf
    cache, which I usually like to do manually.
 
 ## Changing swappiness
 
 If you have 8GB or more ram, you might benefit from it; otherwise, leave it as it is.
 
-1. To see current swappiness, enter `cat /proc/sys/vm/swappiness`; it should print `60`; we wanna make it 10.
+1. To see current swappiness, enter `cat /proc/sys/vm/swappiness`; it should print `60`; we want to make it 10.
 
 
 2. `sudo gedit /etc/sysctl.conf`
@@ -243,7 +244,7 @@ If you have 8GB or more ram, you might benefit from it; otherwise, leave it as i
 
 Do not change it to `performance` on Ryzen based CPUs as it **_might_**(I seem to get better performance on AC, but then
 again, `performance` does not seem to allow turbo boost in some cases) hurt their performance, using `ondemand`.
-or `schedutil` is better(more leaning towards `schedutil` as soon as it
+or `schedutil` is better (more leaning towards `schedutil` as soon as it
 gets [fixed](https://www.phoronix.com/scan.php?page=article&item=linux511-amd-patch&num=1)).
 
 1. Run `cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor` to see your current governor.
@@ -252,7 +253,7 @@ gets [fixed](https://www.phoronix.com/scan.php?page=article&item=linux511-amd-pa
 2. `echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor`
 
    This setting most likely will not persist during the next boot; I like to change it manually rather than making a
-   systemd service(I am a laptop, and it gets hot). You might want to google how to make it persistent for your distro
+   systemd service (I am a laptop, and it gets hot). You might want to google how to make it persistent for your distro
    if
    you like OR:
     ```shell
@@ -268,7 +269,7 @@ gets [fixed](https://www.phoronix.com/scan.php?page=article&item=linux511-amd-pa
 ## Improving graphic card performance
 
 You can find overclocking tools specific to your GPU(s), but to make sure your graphics card isn’t being suppressed by
-the OS(especially AMD):
+the OS (especially AMD):
 
 1. Checking whether it is `auto`:
 
