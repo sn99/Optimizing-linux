@@ -155,10 +155,10 @@ non-bootable.
 
 1. `sudo gedit /etc/fstab`, change it to look something like this (this is on fedora, yours might vary):
     ```shell
-    UUID=<do-not-change> /                       btrfs   subvol=root,x-systemd.device-timeout=0,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async 0 0
+    UUID=<do-not-change> /                       btrfs   subvol=root,x-systemd.device-timeout=0,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async,nobarrier,lazytime 0 0
     UUID=<do-not-change> /boot                   ext4    defaults        1 2
     UUID=<do-not-change>          /boot/efi               vfat    umask=0077,shortname=winnt 0 2
-    UUID=<do-not-change> /home                   btrfs   subvol=home,x-systemd.device-timeout=0,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async 0 0
+    UUID=<do-not-change> /home                   btrfs   subvol=home,x-systemd.device-timeout=0,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async,nobarrier,lazytime 0 0
     ```
 
 
