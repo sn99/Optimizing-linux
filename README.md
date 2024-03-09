@@ -155,11 +155,18 @@ non-bootable.
 
 1. `sudo gedit /etc/fstab`, change it to look something like this (this is on fedora, yours might vary):
     ```shell
-    UUID=<do-not-change> /                       btrfs   subvol=root,x-systemd.device-timeout=0,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async,nobarrier,lazytime 0 0
+    UUID=<do-not-change> /                       btrfs   subvol=root,x-systemd.device-timeout=0,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async,lazytime 0 0
     UUID=<do-not-change> /boot                   ext4    defaults        1 2
     UUID=<do-not-change>          /boot/efi               vfat    umask=0077,shortname=winnt 0 2
-    UUID=<do-not-change> /home                   btrfs   subvol=home,x-systemd.device-timeout=0,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async,nobarrier,lazytime 0 0
+    UUID=<do-not-change> /home                   btrfs   subvol=home,x-systemd.device-timeout=0,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async,lazytime 0 0
     ```
+    > Optional : `nobarrier`
+    
+    `nobarrier` option is safe as long you didn't expect sudden powerloss happens or has battery-backed.
+   
+    _On a device with a volatile battery-backed write-back cache, the nobarrier option will not lead to filesystem corruption as the pending blocks are supposed to make it to the permanent storage._ [man 5 btrfs](https://btrfs.readthedocs.io/en/latest/btrfs-man5.html)
+    
+On a device with a volatile battery-backed write-back cache, the nobarrier option will not lead to filesystem corruption as the pending blocks are supposed to make it to the permanent storage.
 
 
 2. `sudo systemctl daemon-reload`
