@@ -165,9 +165,6 @@ non-bootable.
     `nobarrier` option is safe as long you didn't expect sudden powerloss happens or has battery-backed.
    
     _On a device with a volatile battery-backed write-back cache, the nobarrier option will not lead to filesystem corruption as the pending blocks are supposed to make it to the permanent storage._ [man 5 btrfs](https://btrfs.readthedocs.io/en/latest/btrfs-man5.html)
-    
-On a device with a volatile battery-backed write-back cache, the nobarrier option will not lead to filesystem corruption as the pending blocks are supposed to make it to the permanent storage.
-
 
 2. `sudo systemctl daemon-reload`
 
