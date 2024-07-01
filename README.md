@@ -86,14 +86,23 @@ You might want to google `How to make custom kernel in <distro>` to get the pack
    If any steps fail, run `make clean` and start again.
 
 
-7. Making it default in grub (I am using grub2, your process might vary):
-    ```shell
-    sudo grub2-mkconfig -o /boot/grub2/grub.cfg
-    sudo grubby --set-default /boot/vmlinuz-x.x.x-x
-    ```
-   You can find yours `vmlinuz-x.x.x-x` in `/boot/`
+7. Making it default in grub:
+    You can find yours `vmlinuz-x.x.x-x` in `/boot/`
+   
+   Add two lines to /etc/default/grub
+   ```shell
+    GRUB_SAVEDEFAULT=true
+    GRUB_DEFAULT=saved
+   ```
+   
+   ```shell
+    sudo grub-mkconfig -o /boot/grub/grub.cfg
+   ```
 
-Now restart and run `uname -r` to see your kernel.
+   Reboot, select your kernel and it will become the new default until you manually select another kernel. Run `uname -r` to see your kernel.
+
+
+
 
 ### Applying patches
 
@@ -148,16 +157,15 @@ non-bootable.
    /boot/loader/entries/*x.x.x-x
    ```
 
-
-2. `sudo grub2-mkconfig -o /boot/grub2/grub.cfg` or `sudo update-grub2`
+2. `sudo grub-mkconfig -o /boot/grub/grub.cfg`
 
 ## Btrfs filesystem optimizations
 
-1. `sudo gedit /etc/fstab`, change it to look something like this (this is on fedora, yours might vary):
+1. Edit `/etc/fstab`, change it to look something like this (this is on fedora, for your system it might vary):
     ```shell
     UUID=<do-not-change> /                       btrfs   subvol=root,x-systemd.device-timeout=0,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async,lazytime 0 0
     UUID=<do-not-change> /boot                   ext4    defaults        1 2
-    UUID=<do-not-change>          /boot/efi               vfat    umask=0077,shortname=winnt 0 2
+    UUID=<do-not-change> /boot/efi               vfat    umask=0077,shortname=winnt 0 2
     UUID=<do-not-change> /home                   btrfs   subvol=home,x-systemd.device-timeout=0,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async,lazytime 0 0
     ```
     > Optional : `nobarrier`
@@ -181,27 +189,16 @@ few other security add-ons. Nonetheless, if you understand the security concerns
 substantial
 boost in performance.
 
-1. `sudo grubby --args "mitigations=off nowatchdog processor.ignore_ppc=1 amdgpu.ppfeaturemask=0xffffffff ec_sys.write_support=1 split_lock_detect=off" --update-kernel=ALL`
-
-OR
-
-1. `sudo gedit /etc/default/grub`
-
-
-2. You will find a line `GRUB_CMDLINE_LINUX=" ... rhgb quiet` change it to (`...` signifies other parameters):
+1. Edit `/etc/default/grub` and append the following kernel options between the quotes in the `GRUB_CMDLINE_LINUX_DEFAULT` line:
     ```shell
-    GRUB_CMDLINE_LINUX="... rhgb quiet mitigations=off nowatchdog processor.ignore_ppc=1 split_lock_detect=off"
+   mitigations=off nowatchdog processor.ignore_ppc=1 split_lock_detect=off sysrq_always_enabled=1
     ```
+   (for nvidia GPU(s) also add `nvidia.NVreg_RegistryDwords=EnableBrightnessControl=1 nvidia.NVreg_EnableGpuFirmware=0`
 
-3. Also, edit `GRUB_TIMEOUT=5` to `GRUB_TIMEOUT=1.`
+3. `sudo grub-mkconfig -o /boot/grub/grub.cfg`
 
 
-4. `sudo grub2-mkconfig -o /etc/grub2-efi.cfg`
-
-   OR
-
-   `sudo grub2-mkconfig -o /etc/grub2.cfg`
-
+Note: For systemd-boot users the kernel parameters can be edited in `/boot/loader/entries/yourEntry.conf` on the `options` line.
 After rebooting, you can run `cat /proc/cmdline` to see your boot options.
 
 ## Improving boot time
@@ -236,13 +233,9 @@ Our last tweak kinda improved it, but let's try something more.
 
 If you have 8GB or more ram, you might benefit from it; otherwise, leave it as it is.
 
-1. To see current swappiness, enter `cat /proc/sys/vm/swappiness`; it should print `60`; we want to make it 10.
+1. To see current swappiness, execute `cat /proc/sys/vm/swappiness`; it should print `60`; we want to make it 10.
 
-
-2. `sudo gedit /etc/sysctl.conf`
-
-
-3. Enter `vm.swappiness=10` and reboot; now step 1 should print 10.
+2. Edit `/etc/sysctl.conf` and add `vm.swappiness=10` and reboot; now step 1 should print 10.
 
 ## Changing `scaling_governor` to `performance`
 
