@@ -1,12 +1,18 @@
 # Optimizing Linux
 
 I am writing this guide to save my progress and let others contribute to increasing linux performance even further;
-after
-all, many are better than one. You can use all of them or just a few of them. **Read a topic fully before starting**.
+after all, many are better than one. You can use all of them or just a few of them. **Read a topic fully before starting
+**.
 
-I am currently on [Nobara](https://nobaraproject.org/), so some steps may vary from distro to distro.
+I am currently on [Nobara](https://nobaraproject.org/) and Ubuntu, so some steps may vary from distro to distro. I have
+had
+a varied hardware setup with Intel, AMD and NVIDIA.
 
 **NOTE: This guide is not for beginners who are new to Linux** but a few of them can be used safely by them.
+
+**Check out [pinned issues](https://github.com/sn99/Optimizing-linux/issues) before starting**
+
+*No AI was used in writing this blog; all the optimizations mentioned here are the ones I use.*
 
 ## Index
 
@@ -18,7 +24,9 @@ I am currently on [Nobara](https://nobaraproject.org/), so some steps may vary f
 - [Improving boot time](#improving-boot-time)
 - [Changing swappiness](#changing-swappiness)
 - [Changing scaling_governor to performance](#changing-scaling_governor-to-performance)
-- [Improving graphic card performance](#improving-graphic-card-performance)
+- [Improving graphic card performance](#improving-graphic-performance)
+    - [AMD](#amd)
+    - [NVIDIA](#nvidia)
 - [Some other tweaks](#some-other-tweaks)
 
 ---------------------------------------------------
@@ -68,7 +76,8 @@ You might want to google `How to make custom kernel in <distro>` to get the pack
     dmesg --level=warn   
     ```
    To see if you can enable some extra flags for extra features. For
-   example, `psmouse serio1: elantech: The touchpad can support a better bus than the old PS/2 protocol. Make sure MOUSE_PS2_ELANTECH_SMBUS and MOUSE_ELAN_I2C_SMBUS are enabled to get a better touchpad experience.`
+   example,
+   `psmouse serio1: elantech: The touchpad can support a better bus than the old PS/2 protocol. Make sure MOUSE_PS2_ELANTECH_SMBUS and MOUSE_ELAN_I2C_SMBUS are enabled to get a better touchpad experience.`
    can be solved by enabling both of them.
 
 
@@ -160,11 +169,13 @@ non-bootable.
     UUID=<do-not-change>          /boot/efi               vfat    umask=0077,shortname=winnt 0 2
     UUID=<do-not-change> /home                   btrfs   subvol=home,x-systemd.device-timeout=0,ssd,noatime,space_cache,commit=120,compress=zstd,discard=async,lazytime 0 0
     ```
-    > Optional : `nobarrier`
-    
-    `nobarrier` option is safe as long you didn't expect sudden powerloss happens or has battery-backed.
-   
-    _On a device with a volatile battery-backed write-back cache, the nobarrier option will not lead to filesystem corruption as the pending blocks are supposed to make it to the permanent storage._ [man 5 btrfs](https://btrfs.readthedocs.io/en/latest/btrfs-man5.html)
+   > Optional : `nobarrier`
+
+   `nobarrier` option is safe as long you didn't expect sudden powerloss happens or has battery-backed.
+
+   _On a device with a volatile battery-backed write-back cache, the nobarrier option will not lead to filesystem
+   corruption as the pending blocks are supposed to make it to the permanent
+   storage._ [man 5 btrfs](https://btrfs.readthedocs.io/en/latest/btrfs-man5.html)
 
 2. `sudo systemctl daemon-reload`
 
@@ -181,7 +192,9 @@ few other security add-ons. Nonetheless, if you understand the security concerns
 substantial
 boost in performance.
 
-1. `sudo grubby --args "mitigations=off nowatchdog processor.ignore_ppc=1 amdgpu.ppfeaturemask=0xffffffff ec_sys.write_support=1 split_lock_detect=off" --update-kernel=ALL`
+1.
+
+`sudo grubby --args "mitigations=off nowatchdog processor.ignore_ppc=1 amdgpu.ppfeaturemask=0xffffffff ec_sys.write_support=1 split_lock_detect=off" --update-kernel=ALL`
 
 OR
 
@@ -201,6 +214,10 @@ OR
    OR
 
    `sudo grub2-mkconfig -o /etc/grub2.cfg`
+
+   OR
+
+   `sudo update-grub`
 
 After rebooting, you can run `cat /proc/cmdline` to see your boot options.
 
@@ -270,7 +287,16 @@ gets [fixed](https://www.phoronix.com/scan.php?page=article&item=linux511-amd-pa
 
 **Note**: You can also change the default during the kernel compilation.
 
-## Improving graphic card performance
+## Improving graphic performance
+
+Graphic cards are tricky, the best support is for AMD on the other hand NVIDIA has the ray tracing and frame-gen
+cornered,
+atleast for now. You can try overclocking your GPU(s) to get better performance, your mileage may vary.
+
+- Install `power-profiles-daemon` and install power profiles indicator applet (Both should be preinstalled in most
+  distros). → Set it to `Performance` while gaming.
+
+### AMD
 
 You can find overclocking tools specific to your GPU(s), but to make sure your graphics card isn’t being suppressed by
 the OS (especially AMD):
@@ -298,6 +324,66 @@ the OS (especially AMD):
     ```
 
    You can change them back to `auto` if your system overheats.
+
+### NVIDIA
+
+I tried a lot to get it on par with windows (or even surpass it), but unlike AMD, it is not easy. You can find distro
+specific settings
+or blogs or writeup that other people have done that delve deeper into it.
+
+What has worked for me:
+
+**1.** Open NVIDIA X Settings → PRIME profiles → set to Performance Mode
+
+**2.** On laptops atleast NVIDIA seems to limit the wattage available by more than half, you can check it by running
+`nvidia-smi -q | grep -i "Power Limit" -A4`:
+
+```
+$ nvidia-smi -q | grep -i "Power Limit" -A4
+
+        Current Power Limit               : 35.00 W
+        Requested Power Limit             : 35.00 W
+        Default Power Limit               : 35.00 W
+        Min Power Limit                   : 5.00 W
+        Max Power Limit                   : 95.00 W
+    GPU Memory Power Readings 
+        Average Power Draw                : N/A
+        Instantaneous Power Draw          : N/A
+```
+
+This most probably means `nvidia-powerd.service` either doesn't exist or is not running. To fix it:
+
+```shell
+sudo systemctl enable nvidia-powerd.service
+sudo systemctl start nvidia-powerd.service
+``` 
+
+When the above fails try this:
+
+- Copy `/usr/share/doc/nvidia-driver-xxx/nvidia-dbus.conf` into `/etc/dbus-1/system.d/` and also
+  `/usr/share/doc/nvidia-kernel-common-xxx/nvidia-powerd.service` in `/etc/systemd/system/`.
+- Restart the system and run the above commands again.
+
+**Note:** In my case I was not able to find `nvidia-dbus.conf`, but `nvidia-powerd.service` existed.
+
+You can find these and more NVIDIA related documentation on https://download.nvidia.com/XFree86/Linux-x86_64/. Select
+your
+driver based on `nvidia-smi` output -> Open `README`. The above configs instructions are under "Dynamic Boost on Linux".
+
+If you have done everything correctly till now you should be able to see new wattages:
+
+```
+$ nvidia-smi -q | grep -i "Power Limit" -A4
+
+        Current Power Limit               : 80.00 W
+        Requested Power Limit             : 80.00 W
+        Default Power Limit               : 35.00 W
+        Min Power Limit                   : 5.00 W
+        Max Power Limit                   : 95.00 W
+    GPU Memory Power Readings 
+        Average Power Draw                : N/A
+        Instantaneous Power Draw          : N/A
+```
 
 ## Some other tweaks
 
