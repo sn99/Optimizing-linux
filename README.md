@@ -1,8 +1,7 @@
 # Optimizing Linux
 
 I am writing this guide to save my progress and let others contribute to increasing linux performance even further;
-after all, many are better than one. You can use all of them or just a few of them. **Read a topic fully before starting
-**.
+after all, many are better than one. You can use all of them or just a few of them. **Read a topic fully before starting**.
 
 I am currently on [Nobara](https://nobaraproject.org/) and Ubuntu, so some steps may vary from distro to distro. I have
 had
@@ -175,7 +174,7 @@ non-bootable.
 
    _On a device with a volatile battery-backed write-back cache, the nobarrier option will not lead to filesystem
    corruption as the pending blocks are supposed to make it to the permanent
-   storage._ [man 5 btrfs](https://btrfs.readthedocs.io/en/latest/btrfs-man5.html)
+   storage._ [man 5 btrfs](https://btrfs.readthedocs.io/en/latest/btrfs-man5.html).
 
 2. `sudo systemctl daemon-reload`
 
@@ -333,9 +332,9 @@ or blogs or writeup that other people have done that delve deeper into it.
 
 What has worked for me:
 
-**1.** Open NVIDIA X Settings → PRIME profiles → set to Performance Mode
+**1.** Open `NVIDIA X Settings` → `PRIME profiles` → set to `Performance Mode`
 
-**2.** On laptops atleast NVIDIA seems to limit the wattage available by more than half, you can check it by running
+**2.** On laptops, NVIDIA seems to limit the wattage available by more than half; you can check it by running:
 `nvidia-smi -q | grep -i "Power Limit" -A4`:
 
 ```
