@@ -386,7 +386,7 @@ $ nvidia-smi -q | grep -i "Power Limit" -A4
 
 ## Some other tweaks
 
-- [ArchWiki/Improving performance](https://wiki.archlinux.org/index.php/Improving_performance)
+- [ArchWiki/Improving performance](https://wiki.archlinux.org/index.php/Improving_performance) OR [ArchWiki/Gaming/Improving performance](https://wiki.archlinux.org/title/Gaming#Improving_performance)
 
 - Disabling `Cool'n'Quiet` or `speedstep` or `PowerNow!` from bios (will cause heat up on laptops, only enable it during
   gaming)
