@@ -64,7 +64,7 @@ You might want to google `How to make custom kernel in <distro>` to get the pack
 3. Edit `Makefile` and change `EXTRAVERSION` to add something. For example, "EXTRAVERSION = \<yourname>".
 
 4. (You might want to see the next subtopic before doing this) Now run `make xconfig`. Now a lot of optimizations are
-   possible
+   possible.
    Here, many dead codes and modules can be removed and enabled. Let's go the safe road for now.
     - Now, one of the best things you can do is no longer build for a generic kernel. Select
         ```markdown
@@ -180,9 +180,9 @@ non-bootable.
    corruption as the pending blocks are supposed to make it to the permanent
    storage._ [man 5 btrfs](https://btrfs.readthedocs.io/en/latest/btrfs-man5.html).
 
-2. `sudo systemctl daemon-reload`
+2. `sudo systemctl daemon-reload`.
 
-3. `sudo systemctl enable fstrim.timer`
+3. `sudo systemctl enable fstrim.timer`.
 
 ## Changing boot parameters
 
@@ -204,9 +204,9 @@ OR
     GRUB_CMDLINE_LINUX="... rhgb quiet mitigations=off nowatchdog processor.ignore_ppc=1 split_lock_detect=off"
     ```
 
-3. Also, edit `GRUB_TIMEOUT=5` to `GRUB_TIMEOUT=1.`
+3. Also, edit `GRUB_TIMEOUT=5` to `GRUB_TIMEOUT=1`.
 
-4. `sudo grub2-mkconfig -o /etc/grub2-efi.cfg`
+4. `sudo grub2-mkconfig -o /etc/grub2-efi.cfg`.
 
    OR
 
@@ -252,7 +252,7 @@ If you have 8GB or more ram, you might benefit from it; otherwise, leave it as i
 
 1. To see current swappiness, enter `cat /proc/sys/vm/swappiness`; it should print `60`; we want to make it 10.
 
-2. `sudo gedit /etc/sysctl.conf`
+2. `sudo gedit /etc/sysctl.conf`.
 
 3. Enter `vm.swappiness=10` and reboot; now step 1 should print 10.
 
@@ -266,7 +266,7 @@ gets [fixed](https://www.phoronix.com/scan.php?page=article&item=linux511-amd-pa
 
 1. Run `cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor` to see your current governor.
 
-2. `echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor`
+2. `echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor`.
 
    This setting most likely will not persist during the next boot; I like to change it manually rather than making a
    systemd service (I am a laptop, and it gets hot). You might want to google how to make it persistent for your distro
@@ -310,7 +310,7 @@ the OS (especially AMD):
     sudo cat /sys/kernel/debug/dri/1/amdgpu_pm_info
     ```
 
-3. Now set everything to high:
+3. Now set everything to `high`:
 
     ```shell
     sudo su
@@ -327,7 +327,7 @@ distro-specific settings or blogs or writeup that other people have done that de
 
 What has worked for me:
 
-**1.** Open `NVIDIA X Settings` → `PRIME profiles` → set to `Performance Mode`
+**1.** Open `NVIDIA X Settings` → `PRIME profiles` → set to `Performance Mode`.
 
 **2.** On laptops, NVIDIA seems to limit the wattage available by more than half; you can check it by running:
 `nvidia-smi -q | grep -i "Power Limit" -A4`:
@@ -382,7 +382,7 @@ $ nvidia-smi -q | grep -i "Power Limit" -A4
 ## Some other tweaks
 
 - [ArchWiki/Improving performance](https://wiki.archlinux.org/index.php/Improving_performance)
-  OR [ArchWiki/Gaming/Improving performance](https://wiki.archlinux.org/title/Gaming#Improving_performance)
+  OR [ArchWiki/Gaming/Improving performance](https://wiki.archlinux.org/title/Gaming#Improving_performance).
 
 - Disabling `Cool'n'Quiet` or `speedstep` or `PowerNow!` from bios (will cause heat up on laptops, only enable it during
   gaming). I have had games that boost high for the initial few minutes, then the system heats up followed by
@@ -391,18 +391,17 @@ $ nvidia-smi -q | grep -i "Power Limit" -A4
 - Check other BIOS features; they vary from system to system but should give a boost in performance.
   Eg- RAM XMP, Resizable Bar, etc. I also have seen fan options like - silent, balanced, performance, turbo, etc.
 
-- Using `X` instead of `Wayland` (may vary game to game)
+- Using `X` instead of `Wayland` (may vary game to game).
 
 - Using `Opengl` backend in games instead of `Vulkun` (may vary game to game). With Proton (aka steam) you might want to
-  try
-  [GloriousEggroll](https://github.com/GloriousEggroll/proton-ge-custom)
+  try [GloriousEggroll](https://github.com/GloriousEggroll/proton-ge-custom).
 
 ## Tools
 
 For this section I am only considering GUI like tools for now,
 CLIs are plenty (including the ones I made [for dell](https://github.com/sn99/DellG5SE-Linux)).
 
-- [volt-gui](https://github.com/pythonlover02/volt-gui) - AMD Adrenaline / NVIDIA Settings Linux Alternative
+- [volt-gui](https://github.com/pythonlover02/volt-gui) - AMD Adrenaline / NVIDIA Settings Linux Alternative.
 
 ## Hardware
 
