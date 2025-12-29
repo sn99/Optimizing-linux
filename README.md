@@ -28,6 +28,7 @@ had a varied hardware setup with Intel, AMD and NVIDIA.
     - [AMD](#amd)
     - [NVIDIA](#nvidia)
 - [Some other tweaks](#some-other-tweaks)
+- [Tools](#tools)
 - [Hardware](#hardware)
 
 ---------------------------------------------------
@@ -393,6 +394,13 @@ $ nvidia-smi -q | grep -i "Power Limit" -A4
 - Using `Opengl` backend in games instead of `Vulkun` (may vary game to game). With Proton (aka steam) you might want to
   try
   [GloriousEggroll](https://github.com/GloriousEggroll/proton-ge-custom)
+
+## Tools
+
+For this section I am only considering GUI like tools for now, 
+CLIs are plenty (including the ones I made [for dell](https://github.com/sn99/DellG5SE-Linux)). 
+
+- [volt-gui](https://github.com/pythonlover02/volt-gui) - AMD Adrenaline / NVIDIA Settings Linux Alternative
 
 ## Hardware
 
