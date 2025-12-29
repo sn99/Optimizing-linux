@@ -408,7 +408,8 @@ CLIs are plenty (including the ones I made [for dell](https://github.com/sn99/De
 Not really specific to linux tbh, but I had success with two main things:
 
 - Using PTM7950 pad instead of thermal paste for heat sink.
-- Using a laptop cooling stand (check out the ones with foam seal and dust filter).
+- Using a laptop cooling stand (check out the ones with foam seal and dust filter). Some laptops work better without it
+  (checkout [Jarrods Tech](https://www.youtube.com/@JarrodsTech)), in that case get a cooler without foam.
 
 ---------------------------------------------------
 
