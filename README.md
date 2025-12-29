@@ -1,11 +1,12 @@
 # Optimizing Linux
 
 I am writing this guide to save my progress and let others contribute to increasing linux performance even further;
-after all, many are better than one. You can use all of them or just a few of them. **Read a topic fully before starting**.
+after all, many are better than one. You can use all of them or just a few of them.
+
+**Read a topic fully before starting**.
 
 I am currently on [Nobara](https://nobaraproject.org/) and Ubuntu, so some steps may vary from distro to distro. I have
-had
-a varied hardware setup with Intel, AMD and NVIDIA.
+had a varied hardware setup with Intel, AMD and NVIDIA.
 
 **NOTE: This guide is not for beginners who are new to Linux** but a few of them can be used safely by them.
 
@@ -27,17 +28,25 @@ a varied hardware setup with Intel, AMD and NVIDIA.
     - [AMD](#amd)
     - [NVIDIA](#nvidia)
 - [Some other tweaks](#some-other-tweaks)
+- [Hardware](#hardware)
 
 ---------------------------------------------------
 
 ## Compiling your kernel
 
-By now, everyone agrees that compiling your kernel is one of the best options to get the fastest possible speed.
+I have had varied results, some games I had gains of around 20% others I had loss of 20% ¯\_(ツ)_/¯. Most gains were
+from taking the kernel that ships with the distro, applying patches and compiling for my own specific machine. Losses
+were around using off-the-shelf kernel (they gave some boost in few games and loss in others).
+
 You might want to google `How to make custom kernel in <distro>` to get the packages required to compile the kernel.
+
+- **Note1:**: You will need to apply patches to go along with it, check out the patches applied by Nobara or CachyOS.
+- **Note2:**: You can also find prebuild kernels for your distro that apply optimizations for you.
+  E.g. - [XanMod](https://xanmod.org/), etc.
+- **Note3:**: I also have used custom kernel to enable things like fan control (looking at you Dell (ಡ_ಡ)☞).
 
 1. Download the [latest kernel](https://www.kernel.org/) or whatever you like. Extract it; I am going to assume a
    generic name from now on `linux-x.x.x`.
-
 
 2. The next step is finding the `config` file. Most of the time, you can run:
     ```shell
@@ -50,9 +59,7 @@ You might want to google `How to make custom kernel in <distro>` to get the pack
    if it fails, you can find config in `/proc/config.gz` or simple run `make listnewconfig` OR `make oldconfig`(it
    usually starts a long process; try finding your config in your distro source code too).
 
-
 3. Edit `Makefile` and change `EXTRAVERSION` to add something. For example, "EXTRAVERSION = \<yourname>".
-
 
 4. (You might want to see the next subtopic before doing this) Now run `make xconfig`. Now a lot of optimizations are
    possible
@@ -68,7 +75,6 @@ You might want to google `How to make custom kernel in <distro>` to get the pack
       you best. A simple way might be to just copy [clear linux config](https://github.com/clearlinux-pkgs/linux), but
       it might disable certain features (see next [Applying patches](#applying-patches)).
 
-
 5. Now, you might want to run:
     ```shell
     dmesg --level=err
@@ -78,7 +84,6 @@ You might want to google `How to make custom kernel in <distro>` to get the pack
    example,
    `psmouse serio1: elantech: The touchpad can support a better bus than the old PS/2 protocol. Make sure MOUSE_PS2_ELANTECH_SMBUS and MOUSE_ELAN_I2C_SMBUS are enabled to get a better touchpad experience.`
    can be solved by enabling both of them.
-
 
 6. Finally, compiling the kernel:
     ```shell
@@ -93,7 +98,6 @@ You might want to google `How to make custom kernel in <distro>` to get the pack
 
    If any steps fail, run `make clean` and start again.
 
-
 7. Making it default in grub (I am using grub2, your process might vary):
     ```shell
     sudo grub2-mkconfig -o /boot/grub2/grub.cfg
@@ -105,17 +109,16 @@ Now restart and run `uname -r` to see your kernel.
 
 ### Applying patches
 
-There are several patches that you can use to increase performance or to make life simpler.
+There are several patches that you can use to increase performance or to simplify life.
 
-There are a lot of patches available, and you will have to find those that suit you best. I will be
-using [graysky2](https://github.com/graysky2/kernel_gcc_patch) kernel patch here. Download the
-whole [repo](https://github.com/graysky2/kernel_gcc_patch) or just the file you need. In my case, I have GCC 10 and
-the latest kernel, so I will be
+There are a lot of patches available, and you will have to find those that suit you best. I will be using
+[graysky2](https://github.com/graysky2/kernel_gcc_patch) kernel patch here. Download the
+whole [repo](https://github.com/graysky2/kernel_gcc_patch) or just the file you need.
+In my case, I have GCC 10 and the latest kernel, so I will be
 using [this](https://github.com/graysky2/kernel_gcc_patch/blob/master/enable_additional_cpu_optimizations_for_gcc_v10.1%2B_kernel_v5.8%2B.patch)
 .
 
 1. Copy the desired patch file into the root of the extracted linux dictionary; same place as `.config`.
-
 
 2. `patch -p1 < enable_additional_cpu_optimizations_for_gcc_v10.1+_kernel_v5.8+.patch`
 
@@ -128,7 +131,6 @@ using [this](https://github.com/graysky2/kernel_gcc_patch/blob/master/enable_add
    patching file arch/x86/include/asm/vermagic.h
    ```
 
-
 3. Now, you can start from step 4 in the previous setup and will see:
    ```markdown
    -  Processor type and features
@@ -136,8 +138,8 @@ using [this](https://github.com/graysky2/kernel_gcc_patch/blob/master/enable_add
            - [x] Native optimizations autodetected by GCC
    ```
 
-There are other patches such as [scheduling related](https://cchalpha.blogspot.com/) that you can apply to. Again, try
-finding your patches that suits your system.
+There are other patches such as [scheduling-related](https://cchalpha.blogspot.com/) that you can apply to. Again, try
+finding your patches that suit your system.
 
 ### Removing your own compiled kernel
 
@@ -156,8 +158,7 @@ non-bootable.
    /boot/loader/entries/*x.x.x-x
    ```
 
-
-2. `sudo grub2-mkconfig -o /boot/grub2/grub.cfg` or `sudo update-grub2`
+2. `sudo grub2-mkconfig -o /boot/grub2/grub.cfg` or `sudo update-grub2` or `sudo update-grub`.
 
 ## Btrfs filesystem optimizations
 
@@ -178,18 +179,14 @@ non-bootable.
 
 2. `sudo systemctl daemon-reload`
 
-
 3. `sudo systemctl enable fstrim.timer`
 
 ## Changing boot parameters
 
 **Important:** I usually like disabling `mitigations`, but then again, I am on `AMD` based CPU and do not
-have `Meltdown`
-only `Spectre`, I do not run an unknown script, and even if I have to, I use containers and firefox with `noscript` and
-a
-few other security add-ons. Nonetheless, if you understand the security concerns, you can disable it and see a
-substantial
-boost in performance.
+have `Meltdown` only `Spectre`, I do not run an unknown script, and even if I have to, I use containers and
+firefox with `noscript` and a few other security add-ons. Nonetheless, if you understand the security
+concerns, you can disable it and see a significant boost in performance.
 
 1.
 
@@ -199,14 +196,12 @@ OR
 
 1. `sudo gedit /etc/default/grub`
 
-
 2. You will find a line `GRUB_CMDLINE_LINUX=" ... rhgb quiet` change it to (`...` signifies other parameters):
     ```shell
     GRUB_CMDLINE_LINUX="... rhgb quiet mitigations=off nowatchdog processor.ignore_ppc=1 split_lock_detect=off"
     ```
 
 3. Also, edit `GRUB_TIMEOUT=5` to `GRUB_TIMEOUT=1.`
-
 
 4. `sudo grub2-mkconfig -o /etc/grub2-efi.cfg`
 
@@ -226,7 +221,6 @@ Our last tweak kinda improved it, but let's try something more.
 
 1. Remove startup applications; I use `gnome-tweaks` for a GUI-like experience.
 
-
 2. Run the following to find what service is taking the longest:
 
    ```shell
@@ -244,9 +238,10 @@ Our last tweak kinda improved it, but let's try something more.
     sudo gsettings set org.gnome.software download-updates false
     ```
 
-   You might want to google every service that you think about disabling and what it does; in my case, it just updates
-   dnf
-   cache, which I usually like to do manually.
+- You might want to google every service that you think about disabling and what it does; in my case, it just updates
+  dnf cache, which I usually like to do manually.
+- I like to disable `NetworkManager-wait-online.service`, it waits for the network to be online before prompting login
+  screen. Disabling it makes your system connect to the internet while you type your password :p.
 
 ## Changing swappiness
 
@@ -254,21 +249,19 @@ If you have 8GB or more ram, you might benefit from it; otherwise, leave it as i
 
 1. To see current swappiness, enter `cat /proc/sys/vm/swappiness`; it should print `60`; we want to make it 10.
 
-
 2. `sudo gedit /etc/sysctl.conf`
-
 
 3. Enter `vm.swappiness=10` and reboot; now step 1 should print 10.
 
 ## Changing `scaling_governor` to `performance`
 
 Do not change it to `performance` on Ryzen based CPUs as it **_might_**(I seem to get better performance on AC, but then
-again, `performance` does not seem to allow turbo boost in some cases) hurt their performance, using `ondemand`.
+again, `performance` does not seem to allow turboboost in some cases) hurt their performance, using `ondemand`
 or `schedutil` is better (more leaning towards `schedutil` as soon as it
-gets [fixed](https://www.phoronix.com/scan.php?page=article&item=linux511-amd-patch&num=1)).
+gets [fixed](https://www.phoronix.com/scan.php?page=article&item=linux511-amd-patch&num=1)). I had better 1% lows with
+`performance` compared to `balanced`.
 
 1. Run `cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor` to see your current governor.
-
 
 2. `echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor`
 
@@ -288,9 +281,9 @@ gets [fixed](https://www.phoronix.com/scan.php?page=article&item=linux511-amd-pa
 
 ## Improving graphic performance
 
-Graphic cards are tricky, the best support is for AMD on the other hand NVIDIA has the ray tracing and frame-gen
-cornered,
-atleast for now. You can try overclocking your GPU(s) to get better performance, your mileage may vary.
+Graphic cards are tricky, the best support is for AMD; on the other hand, NVIDIA has the ray tracing and frame-gen
+cornered, at least for now. 
+You can try overclocking your GPU(s) to get better performance or undervolting; your mileage may vary.
 
 - Install `power-profiles-daemon` and install power profiles indicator applet (Both should be preinstalled in most
   distros). → Set it to `Performance` while gaming.
@@ -326,9 +319,8 @@ the OS (especially AMD):
 
 ### NVIDIA
 
-I tried a lot to get it on par with windows (or even surpass it), but unlike AMD, it is not easy. You can find distro
-specific settings
-or blogs or writeup that other people have done that delve deeper into it.
+I tried a lot to get it on par with windows (or even surpass it), but unlike AMD, it is not easy. You can find
+distro-specific settings or blogs or writeup that other people have done that delve deeper into it.
 
 What has worked for me:
 
@@ -357,7 +349,7 @@ sudo systemctl enable nvidia-powerd.service
 sudo systemctl start nvidia-powerd.service
 ``` 
 
-When the above fails try this:
+When the above fails, try this:
 
 - Copy `/usr/share/doc/nvidia-driver-xxx/nvidia-dbus.conf` into `/etc/dbus-1/system.d/` and also
   `/usr/share/doc/nvidia-kernel-common-xxx/nvidia-powerd.service` in `/etc/systemd/system/`.
@@ -366,10 +358,10 @@ When the above fails try this:
 **Note:** In my case I was not able to find `nvidia-dbus.conf`, but `nvidia-powerd.service` existed.
 
 You can find these and more NVIDIA related documentation on https://download.nvidia.com/XFree86/Linux-x86_64/. Select
-your
-driver based on `nvidia-smi` output -> Open `README`. The above configs instructions are under "Dynamic Boost on Linux".
+your driver based on `nvidia-smi` output -> Open `README`. 
+The above configs instructions are under "Dynamic Boost on Linux".
 
-If you have done everything correctly till now you should be able to see new wattages:
+If you have done everything correctly till now, you should be able to see new wattages:
 
 ```
 $ nvidia-smi -q | grep -i "Power Limit" -A4
@@ -386,16 +378,28 @@ $ nvidia-smi -q | grep -i "Power Limit" -A4
 
 ## Some other tweaks
 
-- [ArchWiki/Improving performance](https://wiki.archlinux.org/index.php/Improving_performance) OR [ArchWiki/Gaming/Improving performance](https://wiki.archlinux.org/title/Gaming#Improving_performance)
+- [ArchWiki/Improving performance](https://wiki.archlinux.org/index.php/Improving_performance)
+  OR [ArchWiki/Gaming/Improving performance](https://wiki.archlinux.org/title/Gaming#Improving_performance)
 
 - Disabling `Cool'n'Quiet` or `speedstep` or `PowerNow!` from bios (will cause heat up on laptops, only enable it during
-  gaming)
+  gaming). I have had games that boost high for the initial few minutes, then the system heats up followed by
+  throttling, and CPU/GPU never boosting again.
 
-- Check other bios features, too; they vary from system to system but should have a significant boost in performance
+- Check other BIOS features; they vary from system to system but should give a boost in performance.
+  Eg- RAM XMP, Resizable Bar, etc. I also have seen fan options like - silent, balanced, performance, turbo, etc.
 
 - Using `X` instead of `Wayland` (may vary game to game)
 
-- Using `Opengl` backend in games instead of `Vulkun` (may vary game to game)
+- Using `Opengl` backend in games instead of `Vulkun` (may vary game to game). With Proton (aka steam) you might want to
+  try
+  [GloriousEggroll](https://github.com/GloriousEggroll/proton-ge-custom)
+
+## Hardware
+
+Not really specific to linux tbh, but I had success with two main things:
+
+- Using PTM7950 pad instead of thermal paste for heat sink.
+- Using a laptop cooling stand (check out the ones with foam seal and dust filter).
 
 ---------------------------------------------------
 
