@@ -35,16 +35,17 @@ had a varied hardware setup with Intel, AMD and NVIDIA.
 
 ## Compiling your kernel
 
-I have had varied results, some games I had gains of around 20% others I had loss of 20% ¯\_(ツ)_/¯. Most gains were
+I have had varied results, some games I had gains of around 20% others I had loss of 20% ¯\\_(ツ)_/¯. Most gains were
 from taking the kernel that ships with the distro, applying patches and compiling for my own specific machine. Losses
 were around using off-the-shelf kernel (they gave some boost in few games and loss in others).
 
 You might want to google `How to make custom kernel in <distro>` to get the packages required to compile the kernel.
 
-- **Note1:**: You will need to apply patches to go along with it, check out the patches applied by Nobara or CachyOS.
-- **Note2:**: You can also find prebuild kernels for your distro that apply optimizations for you.
+- **Note1:** You will need to apply patches to go along with it, check out the patches applied by Nobara or CachyOS.
+  Read the next section [Applying patches](#applying-patches).
+- **Note2:** You can also find prebuild kernels for your distro that apply optimizations for you.
   E.g. - [XanMod](https://xanmod.org/), etc.
-- **Note3:**: I also have used custom kernel to enable things like fan control (looking at you Dell (ಡ_ಡ)☞).
+- **Note3:** I also have used custom kernel to enable things like fan control (looking at you Dell (ಡ_ಡ)☞).
 
 1. Download the [latest kernel](https://www.kernel.org/) or whatever you like. Extract it; I am going to assume a
    generic name from now on `linux-x.x.x`.
@@ -145,6 +146,7 @@ finding your patches that suit your system.
 ### Removing your own compiled kernel
 
 Try to keep the last working kernel, i.e., have a minimum of two kernels (the one you are using and the previous one).
+
 **NOTE:** Removing the currently running kernel (determined by `uname -r`) will render your system
 non-bootable.
 
@@ -283,7 +285,7 @@ gets [fixed](https://www.phoronix.com/scan.php?page=article&item=linux511-amd-pa
 ## Improving graphic performance
 
 Graphic cards are tricky, the best support is for AMD; on the other hand, NVIDIA has the ray tracing and frame-gen
-cornered, at least for now. 
+cornered, at least for now.
 You can try overclocking your GPU(s) to get better performance or undervolting; your mileage may vary.
 
 - Install `power-profiles-daemon` and install power profiles indicator applet (Both should be preinstalled in most
@@ -359,7 +361,7 @@ When the above fails, try this:
 **Note:** In my case I was not able to find `nvidia-dbus.conf`, but `nvidia-powerd.service` existed.
 
 You can find these and more NVIDIA related documentation on https://download.nvidia.com/XFree86/Linux-x86_64/. Select
-your driver based on `nvidia-smi` output -> Open `README`. 
+your driver based on `nvidia-smi` output -> Open `README`.
 The above configs instructions are under "Dynamic Boost on Linux".
 
 If you have done everything correctly till now, you should be able to see new wattages:
@@ -397,8 +399,8 @@ $ nvidia-smi -q | grep -i "Power Limit" -A4
 
 ## Tools
 
-For this section I am only considering GUI like tools for now, 
-CLIs are plenty (including the ones I made [for dell](https://github.com/sn99/DellG5SE-Linux)). 
+For this section I am only considering GUI like tools for now,
+CLIs are plenty (including the ones I made [for dell](https://github.com/sn99/DellG5SE-Linux)).
 
 - [volt-gui](https://github.com/pythonlover02/volt-gui) - AMD Adrenaline / NVIDIA Settings Linux Alternative
 
