@@ -1,4 +1,4 @@
-# Optimizing Linux Performance
+# Optimizing/Improving Linux Performance
 
 I am writing this guide to save my progress and let others contribute to increasing linux performance even further;
 after all, many are better than one. You can use all of them or just a few of them.
